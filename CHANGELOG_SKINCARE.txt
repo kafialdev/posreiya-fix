@@ -1,0 +1,14 @@
+REIYA Beauty POS — Perubahan dari versi bakery
+
+1. Katalog kasir diubah menjadi tiga tahap:
+   Jenis Produk -> Merek -> Shade/Varian.
+2. Ditambahkan kolom database brand dan variant.
+3. Form produk sekarang memiliki Jenis Produk, Merek, dan Shade/Varian.
+4. Data contoh diganti menjadi 18 produk skincare/beauty.
+5. Tema visual memakai desain awal Elegant POS: hijau tua, putih, dan abu-abu lembut.
+6. Pencarian dapat memakai jenis, merek, shade, nama produk, atau SKU.
+7. Nota transaksi menampilkan nama merek dan varian secara lengkap.
+8. setup.php dapat memigrasikan database POS lama tanpa menghapus transaksi lama.
+9. Fitur stok, pemasukan real time, PDF, cetak, dan WhatsApp tetap tersedia.
+
+- Tampilan dikembalikan ke desain awal Elegant POS: sidebar hijau tua, panel putih, tombol hijau, dan bentuk kartu asli.

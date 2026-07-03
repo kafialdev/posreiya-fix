@@ -1,0 +1,63 @@
+CATATAN PERBAIKAN POSREIYA
+Tanggal: 03 Juli 2026
+
+Fokus pengerjaan:
+- Memperbaiki error dan potensi bug tanpa mengubah desain/tampilan utama website.
+- File CSS tidak diubah agar visual tetap sama.
+
+Perbaikan yang dilakukan:
+1. Validasi path gambar produk diperketat.
+   - Gambar dari database sekarang dibatasi hanya dari folder assets/img/ dan uploads/.
+   - Path mencurigakan seperti ../ otomatis diganti ke placeholder.
+   - Mengurangi risiko gambar rusak atau path tidak aman.
+
+2. Upload gambar produk diperbaiki.
+   - Folder uploads otomatis dibuat jika belum ada.
+   - Sistem mengecek ekstensi dan MIME gambar JPG/PNG/WEBP.
+   - Pesan error tetap memakai gaya lama, tanpa mengubah UI.
+
+3. Edit produk diperbaiki.
+   - Sebelum update, sistem mengecek apakah ID produk benar-benar ada.
+   - Jika produk tidak ditemukan, API mengembalikan pesan error yang jelas.
+
+4. Hapus produk diperbaiki.
+   - Produk hanya dihapus jika masih aktif.
+   - Jika produk sudah terhapus/tidak ditemukan, sistem tidak menganggapnya sukses palsu.
+
+5. Simpan transaksi diperketat.
+   - Item keranjang dengan product_id tidak valid sekarang ditolak.
+   - Nomor transaksi dibuat lebih aman dari risiko duplikasi pada waktu transaksi berdekatan.
+
+6. Dashboard dan riwayat transaksi dibuat lebih tahan error.
+   - Jika response API kosong/sebagian tidak lengkap, JavaScript tidak langsung crash.
+   - Halaman tetap menampilkan state kosong dengan rapi.
+
+7. Katalog kosong diperbaiki.
+   - Jika belum ada produk aktif, halaman kasir sekarang menampilkan pesan kosong yang jelas.
+   - Sebelumnya area katalog bisa kosong tanpa penjelasan.
+
+8. Setup/migrasi database dibuat lebih kuat.
+   - setup.php sekarang mengecek dan menambahkan kolom/index penting bila database lama belum lengkap.
+   - Migrasi transaksi lama dibuat lebih aman dengan token nota dan kode transaksi cadangan.
+   - Data transaksi lama tetap dipertahankan.
+
+9. Download PDF nota dibuat lebih aman untuk nama produk panjang/non-ASCII.
+   - Pemotongan nama produk sekarang lebih aman agar tidak merusak karakter.
+
+Hasil pengecekan:
+- Semua file PHP lolos php -l / tidak ada syntax error.
+- File JavaScript lolos node --check / tidak ada syntax error.
+- Tampilan utama tidak diubah; perubahan hanya pada logic, validasi, dan ketahanan error.
+
+Catatan penggunaan:
+- Setelah upload ke XAMPP/hosting, jalankan setup.php sekali jika database belum siap atau memakai database versi lama.
+- Setelah setup berhasil, setup.php sebaiknya dihapus atau diganti nama demi keamanan.
+- Jika browser masih memuat versi lama, hard refresh atau bersihkan cache karena versi asset sudah dinaikkan ke v=3.1.
+
+
+=== PENYESUAIAN VERCEL FINAL ===
+- Menambahkan vercel.json dan folder api/ sebagai wrapper runtime PHP.
+- config.php sekarang membaca Environment Variables Vercel.
+- DATABASE_IMPORT_VERCEL.sql dibuat tanpa CREATE DATABASE, tanpa USE, dan tanpa FOREIGN KEY agar kompatibel serverless MySQL.
+- Menambahkan health.php untuk tes koneksi database.
+- Upload gambar lokal diberi pesan jelas karena filesystem Vercel tidak permanen/read-only.

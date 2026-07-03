@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "framework": null,
+  "builds": [
+    { "src": "api/index.php", "use": "vercel-php@0.9.0" },
+    { "src": "assets/**", "use": "@vercel/static" },
+    { "src": "uploads/**", "use": "@vercel/static" },
+    { "src": "preview.html", "use": "@vercel/static" },
+    { "src": "PREVIEW.png", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/uploads/(.*)", "dest": "/uploads/$1" },
+    { "src": "/preview.html", "dest": "/preview.html" },
+    { "src": "/PREVIEW.png", "dest": "/PREVIEW.png" },
+    { "src": "/(.*)", "dest": "/api/index.php" }
+  ]
+}
