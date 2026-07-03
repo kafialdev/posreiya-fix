@@ -44,10 +44,10 @@ $urlDb = database_url_parts();
 
 return [
     'db' => [
-        'host' => env_value(['DB_HOST', 'MYSQL_HOST', 'TIDB_HOST', 'PLANETSCALE_DB_HOST'], $urlDb['host'] ?? 'localhost'),
+        'host' => env_value(['DB_HOST', 'MYSQL_HOST', 'TIDB_HOST', 'PLANETSCALE_DB_HOST'], $urlDb['host'] ?? ''),
         'port' => env_value(['DB_PORT', 'MYSQL_PORT', 'TIDB_PORT', 'PLANETSCALE_DB_PORT'], $urlDb['port'] ?? '3306'),
-        'name' => env_value(['DB_NAME', 'MYSQL_DATABASE', 'TIDB_DATABASE', 'TIDB_DB_NAME', 'PLANETSCALE_DB'], $urlDb['name'] ?? 'elegant_pos'),
-        'user' => env_value(['DB_USER', 'MYSQL_USER', 'TIDB_USER', 'TIDB_USERNAME', 'PLANETSCALE_DB_USERNAME'], $urlDb['user'] ?? 'root'),
+        'name' => env_value(['DB_NAME', 'MYSQL_DATABASE', 'TIDB_DATABASE', 'TIDB_DB_NAME', 'PLANETSCALE_DB'], $urlDb['name'] ?? ''),
+        'user' => env_value(['DB_USER', 'MYSQL_USER', 'TIDB_USER', 'TIDB_USERNAME', 'PLANETSCALE_DB_USERNAME'], $urlDb['user'] ?? ''),
         'pass' => env_value(['DB_PASS', 'DB_PASSWORD', 'MYSQL_PASSWORD', 'TIDB_PASSWORD', 'PLANETSCALE_DB_PASSWORD'], $urlDb['pass'] ?? ''),
         'charset' => env_value(['DB_CHARSET'], 'utf8mb4'),
         'ssl' => env_bool(['DB_SSL', 'MYSQL_SSL', 'TIDB_SSL'], false),

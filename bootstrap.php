@@ -1,6 +1,25 @@
 <?php
 declare(strict_types=1);
 
+// Vercel/TiDB production fix: jangan tampilkan Deprecated Warning ke response JSON.
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+ini_set('display_errors', '0');
+
+function pdo_mysql_attr(string $name): ?int
+{
+    $newConstant = 'Pdo\\Mysql::ATTR_' . $name;
+    if (class_exists('Pdo\\Mysql') && defined($newConstant)) {
+        return constant($newConstant);
+    }
+
+    $oldConstant = 'PDO::MYSQL_ATTR_' . $name;
+    if (defined($oldConstant)) {
+        return constant($oldConstant);
+    }
+
+    return null;
+}
+
 $config = require __DIR__ . '/config.php';
 date_default_timezone_set($config['app']['timezone'] ?? 'Asia/Jakarta');
 
@@ -14,6 +33,13 @@ function db(): PDO
     }
 
     $db = $config['db'];
+
+    foreach (['host' => 'DB_HOST', 'name' => 'DB_NAME', 'user' => 'DB_USER'] as $key => $envName) {
+        if (trim((string) ($db[$key] ?? '')) === '') {
+            throw new RuntimeException($envName . ' belum terbaca di Vercel Environment Variables.');
+        }
+    }
+
     $dsn = sprintf(
         'mysql:host=%s;port=%s;dbname=%s;charset=%s',
         $db['host'],
@@ -31,7 +57,10 @@ function db(): PDO
     $sslCa = (string) ($db['ssl_ca'] ?? '');
     $sslEnabled = (bool) ($db['ssl'] ?? false);
 
-    if ($sslEnabled && defined('PDO::MYSQL_ATTR_SSL_CA')) {
+    $sslCaAttr = pdo_mysql_attr('SSL_CA');
+    $sslVerifyAttr = pdo_mysql_attr('SSL_VERIFY_SERVER_CERT');
+
+    if ($sslEnabled && $sslCaAttr !== null) {
         $candidateCaFiles = array_filter([
             $sslCa,
             '/etc/ssl/certs/ca-certificates.crt',
@@ -41,16 +70,16 @@ function db(): PDO
 
         foreach ($candidateCaFiles as $candidateCaFile) {
             if (is_file($candidateCaFile)) {
-                $options[PDO::MYSQL_ATTR_SSL_CA] = $candidateCaFile;
+                $options[$sslCaAttr] = $candidateCaFile;
                 break;
             }
         }
 
-        if (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
-            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+        if ($sslVerifyAttr !== null) {
+            $options[$sslVerifyAttr] = false;
         }
-    } elseif ($sslCa !== '' && defined('PDO::MYSQL_ATTR_SSL_CA') && is_file($sslCa)) {
-        $options[PDO::MYSQL_ATTR_SSL_CA] = $sslCa;
+    } elseif ($sslCa !== '' && $sslCaAttr !== null && is_file($sslCa)) {
+        $options[$sslCaAttr] = $sslCa;
     }
 
     $pdo = new PDO($dsn, $db['user'], $db['pass'], $options);

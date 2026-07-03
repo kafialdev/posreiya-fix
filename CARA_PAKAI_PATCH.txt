@@ -1,0 +1,19 @@
+PATCH FIX TiDB + Vercel
+
+Upload/replace 2 file ini di root GitHub repo:
+- bootstrap.php
+- config.php
+
+Setelah commit:
+1. Vercel → Deployments → Redeploy
+2. Centang Clear Build Cache kalau ada
+3. Tes: https://posreiya-fix.vercel.app/health.php
+
+Pastikan Environment Variables di Vercel:
+DB_HOST=gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com
+DB_PORT=4000
+DB_NAME=posreiya
+DB_USER=QWGBXmA15sABDbb.root
+DB_PASS=password dari TiDB
+DB_SSL=true
+APP_BASE_URL=https://posreiya-fix.vercel.app
