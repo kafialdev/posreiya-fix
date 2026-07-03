@@ -1,41 +1,36 @@
 <?php
-// Vercel PHP router for POSREIYA.
-// File ini wajib berada di: api/index.php
+// Satu-satunya entrypoint PHP untuk Vercel.
+// Jangan tambah file PHP lain di folder /api agar Vercel tidak salah membaca function.
 
-$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $root = dirname(__DIR__);
 
-$routes = [
-    '/' => 'index.php',
-    '/index.php' => 'index.php',
-    '/api.php' => 'api.php',
-    '/health.php' => 'health.php',
-    '/setup.php' => 'setup.php',
-    '/receipt.php' => 'receipt.php',
-    '/print_receipt.php' => 'print_receipt.php',
-    '/download_receipt.php' => 'download_receipt.php',
-    '/preview.html' => 'preview.html',
-];
+switch ($path) {
+    case '/api.php':
+        require $root . '/api.php';
+        break;
 
-if (isset($routes[$path])) {
-    require $root . '/' . $routes[$path];
-    exit;
+    case '/setup.php':
+        require $root . '/setup.php';
+        break;
+
+    case '/receipt.php':
+        require $root . '/receipt.php';
+        break;
+
+    case '/print_receipt.php':
+        require $root . '/print_receipt.php';
+        break;
+
+    case '/download_receipt.php':
+        require $root . '/download_receipt.php';
+        break;
+
+    case '/health.php':
+        require $root . '/health.php';
+        break;
+
+    default:
+        require $root . '/index.php';
+        break;
 }
-
-$basename = basename($path);
-$allowedPhp = [
-    'api.php',
-    'health.php',
-    'setup.php',
-    'receipt.php',
-    'print_receipt.php',
-    'download_receipt.php',
-    'index.php',
-];
-
-if (in_array($basename, $allowedPhp, true) && file_exists($root . '/' . $basename)) {
-    require $root . '/' . $basename;
-    exit;
-}
-
-require $root . '/index.php';

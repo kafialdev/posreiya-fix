@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf8"/><stop offset="1" stop-color="#d8efe8"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="22" stdDeviation="18" flood-color="#654f4a" flood-opacity=".18"/></filter>
+ <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".96"/><stop offset="1" stop-color="#f4ece8" stop-opacity=".9"/></linearGradient>
+</defs>
+<rect width="900" height="700" rx="48" fill="url(#bg)"/>
+<circle cx="110" cy="105" r="58" fill="#fff" opacity=".42"/><circle cx="790" cy="590" r="92" fill="#fff" opacity=".28"/>
+<ellipse cx="450" cy="585" rx="220" ry="35" fill="#5e4841" opacity=".12"/>
+<g filter="url(#shadow)"><ellipse cx="450" cy="392" rx="198" ry="168" fill="#3b3433"/><ellipse cx="450" cy="370" rx="188" ry="153" fill="#d8efe8" stroke="#fff" stroke-width="16"/><ellipse cx="450" cy="353" rx="146" ry="112" fill="#fff" opacity=".92"/><path d="M305 425c80 46 210 48 293 0" fill="none" stroke="#3f8d78" stroke-width="14" stroke-linecap="round"/></g><text x="450" y="330" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="32" font-weight="800" fill="#3f8d78">Wardah</text>
+<text x="450" y="373" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="700" letter-spacing="3" fill="#4a403e">COLORFIT</text>
+<text x="450" y="408" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="17" font-weight="700" fill="#6e615d">01 LIGHT BEIGE</text></svg>
