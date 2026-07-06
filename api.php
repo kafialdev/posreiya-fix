@@ -68,6 +68,8 @@ try {
         }
 
         $imagePath = $existingImage;
+        $imageUploadSkippedOnVercel = false;
+
         if (isset($_FILES['image']) && ($_FILES['image']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
             $file = $_FILES['image'];
             if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
@@ -80,16 +82,25 @@ try {
             $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
             $extension = strtolower(pathinfo((string) $file['name'], PATHINFO_EXTENSION));
             $mime = function_exists('mime_content_type') ? (string) @mime_content_type($file['tmp_name']) : '';
+
             if (!isset($allowed[$extension]) || @getimagesize($file['tmp_name']) === false || ($mime !== '' && !in_array($mime, $allowedMime, true))) {
                 json_response(['success' => false, 'message' => 'Gambar harus JPG, PNG, atau WEBP.'], 422);
             }
-            ensure_writable_directory(__DIR__ . '/uploads');
-            $filename = 'product-' . bin2hex(random_bytes(8)) . '.' . $allowed[$extension];
-            $destination = __DIR__ . '/uploads/' . $filename;
-            if (!move_uploaded_file($file['tmp_name'], $destination)) {
-                json_response(['success' => false, 'message' => 'Folder uploads tidak dapat ditulis.'], 500);
+
+            // Di Vercel, filesystem function tidak cocok untuk menyimpan upload permanen.
+            // Supaya tambah produk tetap bisa disimpan, gambar diabaikan dan produk memakai placeholder.
+            if (getenv('VERCEL')) {
+                $imagePath = 'assets/img/product-placeholder.svg';
+                $imageUploadSkippedOnVercel = true;
+            } else {
+                ensure_writable_directory(__DIR__ . '/uploads');
+                $filename = 'product-' . bin2hex(random_bytes(8)) . '.' . $allowed[$extension];
+                $destination = __DIR__ . '/uploads/' . $filename;
+                if (!move_uploaded_file($file['tmp_name'], $destination)) {
+                    json_response(['success' => false, 'message' => 'Folder uploads tidak dapat ditulis.'], 500);
+                }
+                $imagePath = 'uploads/' . $filename;
             }
-            $imagePath = 'uploads/' . $filename;
         }
 
         if ($id > 0) {
@@ -105,6 +116,10 @@ try {
             $stmt = $pdo->prepare('INSERT INTO products (sku, name, category, brand, variant, price, stock, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
             $stmt->execute([$sku, $name, $category, $brand, $variant, $price, $stock, $imagePath]);
             $message = 'Produk berhasil ditambahkan.';
+        }
+
+        if ($imageUploadSkippedOnVercel) {
+            $message .= ' Catatan: foto tidak disimpan karena Vercel tidak mendukung upload file lokal permanen.';
         }
 
         json_response(['success' => true, 'message' => $message]);
